@@ -9,44 +9,43 @@ import UIKit
 import SpringAnimation
 
 final class MainViewController: UIViewController {
-//MARK: IBOutlets
-    @IBOutlet var animationImage: SpringImageView!
-    
-    @IBOutlet var presetLabel: UILabel!
-    @IBOutlet var curveLabel: UILabel!
-    @IBOutlet var forceLabel: UILabel!
-    @IBOutlet var durationLabel: UILabel!
-    @IBOutlet var delayLabel: UILabel!
-    
-    @IBOutlet var runAnimationButton: UIButton!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-       createsAnimation()
+    //MARK: IBOutlets
+    @IBOutlet weak var animationImage: SpringView!
+    @IBOutlet weak var animationLabel: SpringLabel! {
+        didSet {
+            animationLabel.text = animation.description
+        }
     }
+    //MARK: Private properties
+    private var animation = Animation.getSomeAnimation()
     //MARK: IBActions
-    @IBAction func animationButtonDidTap() {
-        createsAnimation()
-    }
-}
-//MARK: MainViewController extension
-extension MainViewController {
-    private func createsAnimation() {
-        let preset = ImageAnimation.getSomeAnimation().preset
+    
+    @IBAction func animationButtonDidTap(_ sender: UIButton) {
         
-        runAnimationButton.setTitle("Run \(preset)", for: .normal)
+        setAnimationToLabel()
         
-        presetLabel.text = "Preset: \(preset)"
-        curveLabel.text = "Curve: \(ImageAnimation.getSomeAnimation().curve)"
-        forceLabel.text = "Force: \(String(format: "%.2f", ImageAnimation.getSomeAnimation().force))"
-        durationLabel.text = "Duration: \(String(format: "%.2f",ImageAnimation.getSomeAnimation().duration))"
-        delayLabel.text = "Delay: \(ImageAnimation.getSomeAnimation().delay)"
-        
-        animationImage.animation = "\(preset)"
-        animationImage.curve = "\(ImageAnimation.getSomeAnimation().curve)"
-        animationImage.force = CGFloat(ImageAnimation.getSomeAnimation().force)
-        animationImage.duration = CGFloat(animationImage.duration)
-        animationImage.delay = CGFloat(animationImage.delay)
+        animationImage.animation = animation.name
+        animationImage.curve = animation.curve
+        animationImage.force = animation.force
+        animationImage.duration = animation.duration
+        animationImage.delay = animation.delay
         animationImage.animate()
+        
+        animation = Animation.getSomeAnimation()
+        sender.setTitle("Run \(animation.name)", for: .normal)
+        
     }
 }
+    //MARK: MainViewController extension
+    extension MainViewController {
+        private func setAnimationToLabel() {
+            animationLabel.animation = "fall"
+            animationLabel.animate()
+            animationLabel.text = animation.description
+            animationLabel.animateNext { [unowned self] in
+                animationLabel.animation = "slideDown"
+                animationLabel.animate()
+            }
+        }
+    }
+
