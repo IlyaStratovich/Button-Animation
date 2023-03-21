@@ -36,6 +36,7 @@ final class MainViewController: UIViewController {
         
     }
 }
+
     //MARK: MainViewController extension
     extension MainViewController {
         private func setAnimationToLabel() {
